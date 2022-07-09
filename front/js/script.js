@@ -7,7 +7,7 @@ function displayKanap(kanaps){
     const section = document.getElementById("items")
     kanaps.forEach(items => {
     section.innerHTML +=
-    `<a ${items.id}>
+    `<a href="./product.html?id${items._id}">
     <article>
       <img src = ${items.imageUrl} alt="Lorem ipsum dolor sit amet, Kanap name1">
       <h3>  ${items.name}</h3>
