@@ -10,7 +10,8 @@ fetch(`http://localhost:3000/api/products/${id}`)
 
 function displayOneProduct(item){
     const section = document.getElementsByClassName("item")
-    section[0].innerHTML = 
+    console.log(section[0])
+    section[0].innerHTML =
     `<article>
             <div class="item__img">
             <img src= ${item.imageUrl} alt="Photographie d'un canapé">
@@ -32,7 +33,7 @@ function displayOneProduct(item){
                   <label for="color-select">Choisir une couleur :</label>
                   <select name="color-select" id="colors">
                       <option value="">--SVP, choisissez une couleur --</option>
-                    <option value= ${item.colors[0]}>
+                    <option value=${item.colors[0]}> </option>
                   </select>
                   </div>
 
@@ -49,4 +50,19 @@ function displayOneProduct(item){
               </div>
             </article>
           </section>`
-}
+}; 
+const idColor = document.getElementById("colors")
+const choixColor = idColor.value
+const btnPanier = document.getElementById("addToCart")
+btnPanier.addEventListener("click", (event)=>{
+  event.preventDefault()
+  })
+let optionProduit = {
+  name : id.name,
+  section : id.id,
+  colors : choixColor,
+  price : id.price,
+  imageUrl : id.imageUrl
+} 
+console.log(btnPanier)
+console.log(optionProduit)
