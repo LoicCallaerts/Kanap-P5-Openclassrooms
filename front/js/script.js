@@ -4,7 +4,9 @@ fetch('http://localhost:3000/api/products/')
 .catch(error=> console.log(error))
 
 function displayKanap(kanaps){
+
     const section = document.getElementById("items")
+    
     kanaps.forEach(items => {
     section.innerHTML +=
     `<a href="./product.html?id=${items._id}">

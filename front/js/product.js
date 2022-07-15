@@ -11,6 +11,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
 function displayOneProduct(item){
     const section = document.getElementsByClassName("item")
     console.log(section[0])
+
     section[0].innerHTML =
     `<article>
             <div class="item__img">
@@ -33,13 +34,20 @@ function displayOneProduct(item){
                   <label for="color-select">Choisir une couleur :</label>
                   <select name="color-select" id="colors">
                       <option value="">--SVP, choisissez une couleur --</option>
-                    <option value=${item.colors[0]}> </option>
+                      ${item.colors.map(function(color){
+                          return (
+                           `<option value=${color}>
+                              ${color}
+                           </option>`
+                          )
+                      })
+                    }
                   </select>
                   </div>
 
                   <div class="item__content__settings__quantity">
                     <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                    <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
+                    <input type="number" name="itemQuantity" min="1" max="100" value="1" id="quantity">
                   </div>
                 </div>
   
@@ -50,19 +58,24 @@ function displayOneProduct(item){
               </div>
             </article>
           </section>`
-}; 
 const idColor = document.getElementById("colors")
+
 const choixColor = idColor.value
+
 const btnPanier = document.getElementById("addToCart")
-btnPanier.addEventListener("click", (event)=>{
-  event.preventDefault()
-  })
+
 let optionProduit = {
   name : id.name,
   section : id.id,
   colors : choixColor,
-  price : id.price,
-  imageUrl : id.imageUrl
+  price : id.price
 } 
-console.log(btnPanier)
-console.log(optionProduit)
+
+btnPanier.addEventListener("click", (event)=>{
+  event.preventDefault()
+  console.log(choixColor)
+  console.log(optionProduit)
+  })
+}; 
+
+
