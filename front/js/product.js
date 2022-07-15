@@ -11,6 +11,9 @@ fetch(`http://localhost:3000/api/products/${id}`)
 function displayOneProduct(item){
     const section = document.getElementsByClassName("item")
     console.log(section[0])
+    let idColor
+    let btnPanier
+    let quantity
 
     section[0].innerHTML =
     `<article>
@@ -58,23 +61,39 @@ function displayOneProduct(item){
               </div>
             </article>
           </section>`
-const idColor = document.getElementById("colors")
+idColor = document.getElementById("colors")
 
-const choixColor = idColor.value
+btnPanier = document.getElementById("addToCart")
 
-const btnPanier = document.getElementById("addToCart")
+quantity = document.getElementById("quantity")
 
-let optionProduit = {
-  name : id.name,
-  section : id.id,
-  colors : choixColor,
-  price : id.price
-} 
+
 
 btnPanier.addEventListener("click", (event)=>{
   event.preventDefault()
-  console.log(choixColor)
-  console.log(optionProduit)
+
+  // Check if previous localStorage is present
+  let previousPanier = window.localStorage.getItem("panier")
+  // Initialize 
+  let panier = []
+  // If previous localStorage is present, hydrate var with parsed content and display its "previous" state
+  if (previousPanier) {
+      panier = JSON.parse(previousPanier)
+      console.log("previous", panier)
+  }
+
+  let optionProduit = {
+    name : item.name,
+    section : item._id,
+    colors : idColor.value,
+    price : item.price,
+    numb : quantity.value
+  } 
+// Define var with previous content as spread arg (...panier) then add the newly selected item
+    panier = [...panier, optionProduit]
+    // Stringify and save array in localStorage
+    window.localStorage.setItem("panier", JSON.stringify(panier));
+    console.log(panier)
   })
 }; 
 
