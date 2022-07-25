@@ -71,7 +71,7 @@ function displayOneProduct(item) {
 
     if (previousPanier) {
       panier = JSON.parse(previousPanier);
-      console.log("previous", panier);
+      // console.log("previous", panier);
     }
 
     let optionProduit = {
@@ -80,17 +80,26 @@ function displayOneProduct(item) {
       numb: quantity.value
     };
 
-    panier = [...panier, optionProduit];
+    // panier = [...panier, optionProduit];
 
-/*     panier.forEach(comand => {
-      if (idPrduct){optionProduit.idProduit === comand.idProduit
-        if (colorProduct){optionProduit.colors === comand.colors 
-          let sameColor = numb + new ;
+    let index = 0
+    let add = false
+
+    panier.forEach(commande => {
+      if (optionProduit.idProduit === commande.idProduit) {
+        add = true 
+        if (optionProduit.colors === commande.colors) {
+
+         commande.numb = parseInt(commande.numb) + parseInt(optionProduit.numb) ;
         }
-      }
-    }) */
+        else{ 
+          panier.splice(index, 0, optionProduit)
+        }} 
+        index++
+    })
+    
+    if (!add){panier.push(optionProduit)}
 
     window.localStorage.setItem("panier", JSON.stringify(panier));
-    console.log(panier);
   });
 }
