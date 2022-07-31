@@ -77,28 +77,30 @@ function displayOneProduct(item) {
     let optionProduit = {
       idProduit: item._id,
       colors: idColor.value,
-      numb: quantity.value
+      numb: quantity.value,
     };
 
     // panier = [...panier, optionProduit];
 
-    let index = 0
-    let add = false
+    let index = 0;
+    let add = false;
 
-    panier.forEach(commande => {
+    panier.forEach((commande) => {
       if (optionProduit.idProduit === commande.idProduit) {
-        add = true 
+        add = true;
         if (optionProduit.colors === commande.colors) {
-
-         commande.numb = parseInt(commande.numb) + parseInt(optionProduit.numb) ;
+          commande.numb =
+            parseInt(commande.numb) + parseInt(optionProduit.numb);
+        } else {
+          panier.splice(index, 0, optionProduit);
         }
-        else{ 
-          panier.splice(index, 0, optionProduit)
-        }} 
-        index++
-    })
-    
-    if (!add){panier.push(optionProduit)}
+      }
+      index++;
+    });
+
+    if (!add) {
+      panier.push(optionProduit);
+    }
 
     window.localStorage.setItem("panier", JSON.stringify(panier));
   });

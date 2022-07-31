@@ -1,31 +1,27 @@
-let objectInCart = localStorage.getItem("panier")
+functionFetch();
+function functionFetch() {
+  fetch("http://localhost:3000/api/products/")
+    .then((res) => res.json())
+    .then((data) => {
+      displayCart(data);
+    })
+    .catch((err) => {
+      throw err;
+    });
+}
 
-var recupProduct = functionFetch() 
-async function functionFetch() {
-    var min = await fetch("http://localhost:3000/api/products/")
-    .then(res => { return res.json() })
-    .catch(err => { throw err });
-    console.log(min)
-    return min
-    }
-
-console.log(recupProduct)
-
-
-function displayCart(kanaps){
-
-    const section = document.getElementById("cart__items")
-    JSON.parse(kanaps).map(item => {
-      var data = 0
-        recupProduct.forEach(element => {
-          if(element._id == item.id){
-          data = element
-          }
-          
-        });
-
-    section.innerHTML +=
-    `<article class="cart__item" data-id="${item.id}" data-color="${item.colors}">
+function displayCart(recupProduct) {
+  let kanaps = JSON.parse(localStorage.getItem("panier"));
+  console.log(recupProduct);
+  const section = document.getElementById("cart__items");
+  kanaps.forEach((item) => {
+    var data = 0;
+    recupProduct.forEach((element) => {
+      if (element._id == item.idProduit) {
+        data = element;
+      }
+    });
+    section.innerHTML += `<article class="cart__item" data-id="${item.idProduit}" data-color="${item.colors}">
     <div class="cart__item__img">
       <img src=${data.imageUrl} alt=${data.altTxt}>
     </div>
@@ -38,16 +34,13 @@ function displayCart(kanaps){
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
           <p>Qté : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${item.quantity}">
+          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${item.numb}>
         </div>
         <div class="cart__item__content__settings__delete">
           <p class="deleteItem">Supprimer</p>
         </div>
       </div>
     </div>
-  </article>`
-});
+  </article>`;
+  });
 }
-
-displayCart(objectInCart)
-
