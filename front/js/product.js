@@ -84,22 +84,30 @@ function displayOneProduct(item) {
 
     let index = 0;
     let add = false;
+    let diffColor = false;
+    let insertion = 0;
 
     panier.forEach((commande) => {
       if (optionProduit.idProduit === commande.idProduit) {
-        add = true;
         if (optionProduit.colors === commande.colors) {
+          add = true;
+          diffColor = false;
           commande.numb =
             parseInt(commande.numb) + parseInt(optionProduit.numb);
         } else {
-          panier.splice(index, 0, optionProduit);
+          diffColor = true;
+          insertion = index;
         }
       }
       index++;
     });
 
     if (!add) {
-      panier.push(optionProduit);
+      if (diffColor) {
+        panier.splice(insertion +1 , 0, optionProduit);
+      } else {
+        panier.push(optionProduit);
+      }
     }
 
     window.localStorage.setItem("panier", JSON.stringify(panier));
