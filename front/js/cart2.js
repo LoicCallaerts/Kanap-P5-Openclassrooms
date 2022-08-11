@@ -1,5 +1,6 @@
 let totalQuantity = 0;
 let totalPrice = 0;
+let value = 0;
 
 functionFetch();
 function functionFetch() {
@@ -47,7 +48,7 @@ function displayCart(recupProduct) {
       </div>
     </div>
   </article>`;
-
+    value = parseInt(item.numb);
     totalQuantity += parseInt(item.numb);
     totalPrice += parseInt(item.numb) * data.price;
     index++;
@@ -59,17 +60,16 @@ function majTotaux(quantity, price) {
   document.getElementById("totalPrice").textContent = price;
 }
 
-let previousPanier = window.localStorage.getItem("panier")
-console.log(previousPanier)
+let panier = JSON.parse(localStorage.getItem("panier"));
+console.log(panier);
+
 function change(value) {
-  alert("tu as changert pour : " + value)
-  if(previousPanier){
-    panier = JSON.parse(previousPanier)
-    localStorage.setItem("panier", JSON.stringify(numb))
+  alert("tu as changert pour : " + value);
+  if (panier) {
+    localStorage.setItem("panier", value);
+    localStorage.getItem("panier");
   }
 }
-
-
 
 function supprimer(index) {
   let kanaps = JSON.parse(localStorage.getItem("panier"));
