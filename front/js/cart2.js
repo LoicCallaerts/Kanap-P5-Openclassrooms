@@ -19,7 +19,6 @@ function displayCart(recupProduct) {
   console.log(recupProduct);
   const section = document.getElementById("cart__items");
   let index = 0;
-  let quantity = 0
   kanaps.forEach((item) => {
     var data = 0;
     recupProduct.forEach((element) => {
@@ -40,7 +39,7 @@ function displayCart(recupProduct) {
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
           <p>Qté : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" onchange="change" min="1" max="100" value=${item.numb}>
+          <input type="number" class="itemQuantity" name="itemQuantity" onchange="change(this.value)" min="1" max="100" value=${item.numb}>
         </div>
         <div class="cart__item__content__settings__delete">
           <p class="deleteItem" onclick="supprimer(${index})">Supprimer</p>
@@ -51,7 +50,6 @@ function displayCart(recupProduct) {
 
     totalQuantity += parseInt(item.numb);
     totalPrice += parseInt(item.numb) * data.price;
-    quantity++
     index++;
   });
   majTotaux(totalQuantity, totalPrice);
@@ -61,17 +59,25 @@ function majTotaux(quantity, price) {
   document.getElementById("totalPrice").textContent = price;
 }
 
-function supprimer(index) {
-  let kanaps = JSON.parse(localStorage.getItem("panier"));
-  kanaps.splice(index, 1)
-  localStorage.setItem("panier", JSON.stringify(kanaps))
-  location.reload()
+let previousPanier = window.localStorage.getItem("panier")
+console.log(previousPanier)
+function change(value) {
+  alert("tu as changert pour : " + value)
+  if(previousPanier){
+    panier = JSON.parse(previousPanier)
+    localStorage.setItem("panier", JSON.stringify(numb))
+  }
 }
 
-function change(){
-  let changer = JSON.parse(localStorage.getItem("panier"))
-  console.log(changer)
+
+
+function supprimer(index) {
+  let kanaps = JSON.parse(localStorage.getItem("panier"));
+  kanaps.splice(index, 1);
+  localStorage.setItem("panier", JSON.stringify(kanaps));
+  location.reload();
 }
+
 const quantityModifier = () => {
   let quantityChanger = document.querySelectorAll(".itemQuantity");
   for (let q = 0; 1 < quantityChanger.length; q++) {
@@ -82,4 +88,3 @@ const quantityModifier = () => {
   }
 };
 quantityModifier();
-
