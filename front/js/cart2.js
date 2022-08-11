@@ -1,6 +1,6 @@
 let totalQuantity = 0;
 let totalPrice = 0;
-let value = 0;
+let previousPanier = window.localStorage.getItem("panier")
 
 functionFetch();
 function functionFetch() {
@@ -40,7 +40,7 @@ function displayCart(recupProduct) {
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
           <p>Qté : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" onchange="change(this.value)" min="1" max="100" value=${item.numb}>
+          <input type="number" class="itemQuantity" name="itemQuantity" onchange="change(this.value, ${index})" min="1" max="100" value=${item.numb}>
         </div>
         <div class="cart__item__content__settings__delete">
           <p class="deleteItem" onclick="supprimer(${index})">Supprimer</p>
@@ -60,14 +60,20 @@ function majTotaux(quantity, price) {
   document.getElementById("totalPrice").textContent = price;
 }
 
-let panier = JSON.parse(localStorage.getItem("panier"));
-console.log(panier);
+function change(value, index) {
 
-function change(value) {
-  alert("tu as changert pour : " + value);
-  if (panier) {
-    localStorage.setItem("panier", value);
-    localStorage.getItem("panier");
+  if(previousPanier){
+
+    let panier = JSON.parse(previousPanier)
+
+    panier.splice(index, 1, {
+      idProduit: panier[index].idProduit,
+      colors: panier[index].colors,
+      numb: value
+    })
+
+    localStorage.setItem("panier", JSON.stringify(panier))
+    console.log(panier)
   }
 }
 
@@ -77,14 +83,3 @@ function supprimer(index) {
   localStorage.setItem("panier", JSON.stringify(kanaps));
   location.reload();
 }
-
-const quantityModifier = () => {
-  let quantityChanger = document.querySelectorAll(".itemQuantity");
-  for (let q = 0; 1 < quantityChanger.length; q++) {
-    let quantityInputeValue = quantityChanger[l].valueAsNumber;
-    kanaps.addQuantity = quantityInputeValue;
-    productsNumbAndPrice();
-    localStorage.setItem("panier", JSON.stringify(kanaps));
-  }
-};
-quantityModifier();

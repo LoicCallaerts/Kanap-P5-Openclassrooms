@@ -65,6 +65,11 @@ function displayOneProduct(item) {
   btnPanier.addEventListener("click", (event) => {
     event.preventDefault();
 
+    if (idColor.value === "") {
+      console.log("No color selected")
+      return
+     }
+
     let previousPanier = window.localStorage.getItem("panier");
 
     let panier = [];
