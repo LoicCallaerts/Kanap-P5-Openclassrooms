@@ -1,55 +1,101 @@
-/* async function fetch() {
-  var mm = null
-  var min = await fetch("http://localhost:3000/api/products/")
-        .then(res => { return res.json() })
-        .catch(err => { throw err });
+let totalQuantity = 0;
+let totalPrice = 0;
 
-    console.log(min)
+// Recuperation de panierdans le local storage
+let previousPanier = window.localStorage.getItem("panier");
 
-    if (localStorage.getItem("panier") == undefined) {
-        localStorage.setItem("panier", JSON.stringify({}));
-    }
+// Fonction permetant de récuperer les informations qui ne sont pas contenues dans le local storage en appelent l'API
+functionFetch();
+function functionFetch() {
+  fetch("http://localhost:3000/api/products/")
+    .then((res) => res.json())
+    .then((data) => {
+      majTotaux(totalQuantity, totalPrice);
+      displayCart(data);
+    })
+    .catch((err) => {
+      throw err;
+    });
 }
- */
-function displayCart(kanapes) {
+// Fonction qui affichera à la fois les informations du local storage et du fetch directement dans le HTML
+function displayCart(recupProduct) {
   let kanaps = JSON.parse(localStorage.getItem("panier"));
+  console.log(recupProduct);
   const section = document.getElementById("cart__items");
-
+  let index = 0;
   kanaps.forEach((item) => {
-    var kanap = "";
-    kanapes.forEach((element) => {});
-    console.log(kanapes);
-    section.innerHTML += `<article class="cart__item" data-id=${item.id} data-color=${item.colors}">
+    var data = 0;
+    recupProduct.forEach((element) => {
+      if (element._id == item.idProduit) {
+        data = element;
+      }
+    });
+    section.innerHTML += `<article class="cart__item" data-id="${item.idProduit}" data-color="${item.colors}">
     <div class="cart__item__img">
-    <img src= ${kanap.imageUrl} alt= ${kanap.altTxt} >
-  </div>
-  <div class="cart__item__content">
-    <div class="cart__item__content__description">
-      <h2>${kanap.name}</h2>
-      <p> ${item.colors}</p>
-      <p> ${kanap.price}€</p>
+      <img src=${data.imageUrl} alt=${data.altTxt}>
     </div>
-    <div class="cart__item__content__settings">
-      <div class="cart__item__content__settings__quantity">
-        <p>Qté : </p>
-        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value= ${item.quantity}>
+    <div class="cart__item__content">
+      <div class="cart__item__content__description">
+        <h2>${data.name}</h2>
+        <p>${item.colors}</p>
+        <p> </p>
       </div>
-      <div class="cart__item__content__settings__delete">
-        <p class="deleteItem">Supprimer</p>
+      <div class="cart__item__content__settings">
+        <div class="cart__item__content__settings__quantity">
+          <p>Qté : </p>
+          <input type="number" class="itemQuantity" name="itemQuantity" onchange="change(this.value, ${index})" min="1" max="100" value=${item.numb}>
+        </div>
+        <div class="cart__item__content__settings__delete">
+          <p class="deleteItem" onclick="supprimer(${index})">Supprimer</p>
+        </div>
       </div>
     </div>
-  </div>
-</article>`;
+  </article>`;
+    value = parseInt(item.numb);
+    totalQuantity += parseInt(item.numb);
+    totalPrice += parseInt(item.numb) * data.price;
+    index++;
   });
-  return displayCart;
+  majTotaux(totalQuantity, totalPrice);
 }
 
-//Instauration formulaire avec regex
-function recupForm() {
-  // Ajout des Regex
-  let form = document.querySelector(".cart__order__form");
+// fonction qui calculera le prix total des articles du panier
+function majTotaux(quantity, price) {
+  document.getElementById("totalQuantity").textContent = quantity;
+  document.getElementById("totalPrice").textContent = price;
+}
+// Focntion permetant de pouvoir incrémenter, diminuer ou mettre une nouvelle valeur dans l'input quantité
+function change(value, index) {
+  if (previousPanier) {
+    let panier = JSON.parse(previousPanier);
+    if (value > 100) {
+      value = 100;
+    } else if (value < 1) {
+      value = 1;
+    }
 
-  //Création des expressions régulières
+    panier.splice(index, 1, {
+      idProduit: panier[index].idProduit,
+      colors: panier[index].colors,
+      numb: value,
+    });
+
+    localStorage.setItem("panier", JSON.stringify(panier));
+    location.reload();
+  }
+}
+// Fonction permettant de supprimer un élément du panier et du local storage
+function supprimer(index) {
+  let kanaps = JSON.parse(localStorage.getItem("panier"));
+  kanaps.splice(index, 1);
+  localStorage.setItem("panier", JSON.stringify(kanaps));
+  location.reload();
+}
+// Fonction destinée à récuperer les informations du formulaire
+function recupForm() {
+  let form = document.querySelector(".cart__order__form");
+  
+  // Mise en place des expression régulière pour géré les caractères autorisés
   let emailRegExp = new RegExp(
     "^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$"
   );
@@ -58,32 +104,27 @@ function recupForm() {
     "^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+"
   );
 
-  // Ecoute de la modification du prénom
+  // Utilisation de la fonction change pour récuperer les inputs
   form.firstName.addEventListener("change", function () {
     validFirstName(this);
   });
 
-  // Ecoute de la modification du prénom
   form.lastName.addEventListener("change", function () {
     validLastName(this);
   });
 
-  // Ecoute de la modification du prénom
   form.address.addEventListener("change", function () {
     validAddress(this);
   });
 
-  // Ecoute de la modification du prénom
   form.city.addEventListener("change", function () {
     validCity(this);
   });
 
-  // Ecoute de la modification du prénom
   form.email.addEventListener("change", function () {
     validEmail(this);
   });
-
-  //validation du prénom
+  // Mise en place des tests pour savoir si les élément rentrés dans les input sont correct
   const validFirstName = function (inputFirstName) {
     let firstNameErrorMsg = inputFirstName.nextElementSibling;
 
@@ -94,7 +135,6 @@ function recupForm() {
     }
   };
 
-  //validation du nom
   const validLastName = function (inputLastName) {
     let lastNameErrorMsg = inputLastName.nextElementSibling;
 
@@ -105,7 +145,6 @@ function recupForm() {
     }
   };
 
-  //validation de l'adresse
   const validAddress = function (inputAddress) {
     let addressErrorMsg = inputAddress.nextElementSibling;
 
@@ -116,7 +155,6 @@ function recupForm() {
     }
   };
 
-  //validation de la ville
   const validCity = function (inputCity) {
     let cityErrorMsg = inputCity.nextElementSibling;
 
@@ -127,7 +165,6 @@ function recupForm() {
     }
   };
 
-  //validation de l'email
   const validEmail = function (inputEmail) {
     let emailErrorMsg = inputEmail.nextElementSibling;
 
@@ -140,26 +177,23 @@ function recupForm() {
 }
 recupForm();
 
-//Envoi des informations client au localstorage
+// Fonction qui renvera les information du formulaire avec les méthode POST
 function sendForm() {
   const btnOrder = document.getElementById("order");
-
-  //Ecouter le panier
+  // Récuperation de information (prenom, nom, etc...) au moment du click
   btnOrder.addEventListener("click", (event) => {
-    //Récupération des coordonnées du formulaire client
+    event.preventDefault();
     let inputName = document.getElementById("firstName");
     let inputLastName = document.getElementById("lastName");
     let inputAdress = document.getElementById("address");
     let inputCity = document.getElementById("city");
     let inputMail = document.getElementById("email");
-
-    //Construction d'un array depuis le local storage
+    // Création d'un ID unique au moment du click
     let idProducts = [];
-    for (let i = 0; i < produitLocalStorage.length; i++) {
-      idProducts.push(produitLocalStorage[i].idProduit);
-    }
-    console.log(idProducts);
-
+    JSON.parse(previousPanier).forEach((element) => {
+      idProducts.push(element.idProduit);
+    });
+    // Création de l'objet formulaire avec les informations précédement récuperée
     const order = {
       contact: {
         firstName: inputName.value,
@@ -170,7 +204,7 @@ function sendForm() {
       },
       products: idProducts,
     };
-
+    // Mise en place de l'objet post qui va stringify l'object order
     const options = {
       method: "POST",
       body: JSON.stringify(order),
@@ -179,14 +213,12 @@ function sendForm() {
         "Content-Type": "application/json",
       },
     };
-
+    // Fetch qui va renvoyer les information du formulaire à l'API avec la méthode POST + Ajoute de l'ID de l'utilisateur dans le local storage et envois sur la page de confirmation
     fetch("http://localhost:3000/api/products/order", options)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        localStorage.clear();
         localStorage.setItem("orderId", data.orderId);
-
         document.location.href = "confirmation.html";
       })
       .catch((err) => {
