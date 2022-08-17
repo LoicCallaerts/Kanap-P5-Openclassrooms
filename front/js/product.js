@@ -78,7 +78,7 @@ function displayOneProduct(item) {
     let previousPanier = window.localStorage.getItem("panier");
     //  Intitialisation d'un panier vide
     let panier = [];
-    //  S'il ya un panier precédent, hydrate les variables avec le contenu parsed et afficher son état précédent 
+    //  S'il ya un panier precédent, met à jour les variables avec le contenu parsed 
     if (previousPanier) {
       panier = JSON.parse(previousPanier);
     }
@@ -121,5 +121,8 @@ function displayOneProduct(item) {
     // Envois des informations au local storage ou mise à jour de celui-ci
 
     window.localStorage.setItem("panier", JSON.stringify(panier));
+
+    alert("vous avez commandé " + optionProduit.numb +" " + item.name + " de couleur " +optionProduit.colors) 
+  
   });
 }
